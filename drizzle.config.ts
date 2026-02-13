@@ -1,0 +1,11 @@
+import { defineConfig } from "drizzle-kit";
+
+export default defineConfig({
+  out: "./drizzle",
+  schema: "./src/lib/db/schema.ts",
+  dialect: "sqlite",
+  dbCredentials: {
+    // biome-ignore lint/style/noNonNullAssertion: <"allow">
+    url: process.env.DB_FILE_NAME!,
+  },
+});

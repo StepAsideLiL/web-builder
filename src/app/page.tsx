@@ -16,3 +16,10 @@ export default function Page() {
     </main>
   );
 }
+
+/**
+ * TODOs
+ * 1. add drizzle with sqlite
+ * 2. add dynamic routes to render page
+ * 3. create edit page with tiptap
+ */
