@@ -1,5 +1,4 @@
-@import "tailwindcss";
-@import "../../styles/tailwind.css";
+@import "../../app/globals.css";
 
 .tiptap p.is-editor-empty:first-child::before {
   color: #adb5bd;

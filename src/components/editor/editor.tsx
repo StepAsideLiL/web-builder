@@ -1,7 +1,7 @@
 "use client";
 
 import type { Editor as EditorType, JSONContent } from "@tiptap/core";
-// import "./editor.css";
+import "./editor.css";
 import DragHandle from "@tiptap/extension-drag-handle-react";
 import { TextStyleKit } from "@tiptap/extension-text-style";
 import { Placeholder } from "@tiptap/extensions";
