@@ -1,65 +1,18 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import * as Editor from "@/components/editor/editor";
+
+export default function Page() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <main className="mx-auto w-full max-w-7xl py-10">
+      <Editor.Provider
+        content={`<h1>The Complete Guide to Modern Web Development</h1><p><strong><em><s><u>Web development has evolved significantly over the past decade</u></s></em></strong>. What once required multiple tools and complex setups can now be accomplished with modern frameworks and libraries that prioritize developer experience.</p><h2>Getting Started</h2><p><code>Before diving into</code> the technical details, it's important to understand the foundational concepts that make modern web development possible.</p><blockquote><p>"The best code is no code at all. Every new line of code you willingly bring into the world is code that has to be debugged, code that has to be read and understood." - Jeff Atwood</p></blockquote><p>This philosophy guides much of modern development practices, emphasizing simplicity and maintainability over complexity.</p><hr><h2>Key Technologies</h2><p>Here are the essential technologies every web developer should be familiar with:</p><ul><li><p>HTML5 and semantic markup</p></li><li><p>CSS3 with modern layout techniques</p><ul><li><p>Flexbox for one-dimensional layouts</p></li><li><p>Grid for two-dimensional layouts</p></li><li><p>Custom properties (CSS variables)</p></li></ul></li><li><p>JavaScript (ES6+)</p></li><li><p>TypeScript for type safety</p></li></ul><h3>Framework Comparison</h3><p>Choosing the right framework depends on your project requirements:</p><ol><li><p>React - Component-based UI library</p></li><li><p>Vue - Progressive framework</p></li><li><p>Angular - Full-featured platform</p></li><li><p>Svelte - Compile-time framework</p></li></ol><hr><h2>Best Practices</h2><p>Following established best practices ensures your code remains maintainable and scalable.</p><blockquote><p>Always write code as if the person who ends up maintaining it is a violent psychopath who knows where you live.</p></blockquote><h3>Code Organization</h3><p>A well-organized codebase is crucial for long-term project success. Consider these principles:</p><ul><li><p>Separation of concerns</p></li><li><p>DRY (Don't Repeat Yourself)</p></li><li><p>KISS (Keep It Simple, Stupid)</p></li></ul><p>By following these guidelines, you'll create applications that are easier to maintain, test, and extend over time.</p>`}
+        onUpdate={(e) => {
+          console.log(e);
+        }}
+      >
+        <Editor.Box className="p-2" />
+      </Editor.Provider>
+    </main>
   );
 }
