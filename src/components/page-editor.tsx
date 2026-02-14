@@ -2,7 +2,7 @@
 
 import * as Editor from "@/components/editor/editor";
 
-export default function Page() {
+export default function PageEditor() {
   return (
     <main className="mx-auto w-full max-w-7xl py-10">
       <Editor.Provider
@@ -16,10 +16,3 @@ export default function Page() {
     </main>
   );
 }
-
-/**
- * TODOs
- * 1. add drizzle with sqlite
- * 2. add dynamic routes to render page
- * 3. create edit page with tiptap
- */
