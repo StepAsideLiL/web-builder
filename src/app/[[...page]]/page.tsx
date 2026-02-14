@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { Settings } from "lucide-react";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -13,18 +14,12 @@ import {
 // import PageEditor from "@/components/page-editor";
 import { db } from "@/lib/db";
 import { pagesTable } from "@/lib/db/schema";
-import { loadSearchParams } from "@/lib/search-param";
 
 export default async function Page(props: PageProps<"/[[...page]]">) {
   const pageUrl =
     (await props.params).page === undefined
       ? "/"
       : `/${(await props.params).page?.join("/")}`;
-  const { action } = loadSearchParams(await props.searchParams);
-
-  if (action === "edit") {
-    return <div>edit page</div>;
-  }
 
   const pageContent = await db
     .select()
@@ -32,37 +27,35 @@ export default async function Page(props: PageProps<"/[[...page]]">) {
     .where(eq(pagesTable.url, pageUrl))
     .get();
 
-  console.log(pageContent);
+  if (pageUrl !== "/" && pageContent === undefined) {
+    notFound();
+  }
 
   return (
     <div>
       <main className="mx-auto w-full max-w-7xl py-10">
         {pageContent === undefined ? (
-          <Empty className="border bg-secondary shadow">
+          <Empty className="border shadow">
             <EmptyHeader>
               <EmptyMedia variant="icon">
                 <Settings />
               </EmptyMedia>
-              <EmptyTitle>No Page</EmptyTitle>
+              <EmptyTitle>No Home Page</EmptyTitle>
               <EmptyDescription>
                 You haven&apos;t created home page yet. Get started by creating
                 home page.
               </EmptyDescription>
-              <EmptyContent className="flex-row justify-center gap-2">
+              <EmptyContent className="flex-row items-center justify-center gap-2">
                 <Button className="cursor-pointer" asChild>
-                  <Link
-                    href={
-                      pageUrl === "/"
-                        ? "/?action=edit"
-                        : `${pageUrl}?action=edit`
-                    }
-                  >
-                    Create Home Page
-                  </Link>
+                  <Link href="/admin/pages">Create Home Page</Link>
                 </Button>
 
-                <Button variant={"outline"} className="cursor-pointer">
-                  Dashboard
+                <Button
+                  variant={"secondary"}
+                  className="cursor-pointer"
+                  asChild
+                >
+                  <Link href="/admin">Dashboard</Link>
                 </Button>
               </EmptyContent>
             </EmptyHeader>
@@ -77,6 +70,8 @@ export default async function Page(props: PageProps<"/[[...page]]">) {
 
 /**
  * TODOs
+ * - create admin page
+ * - create pages page
  * - get page content from db
  * - create edit page with tiptap
  */
