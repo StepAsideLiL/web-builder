@@ -5,5 +5,6 @@ export const pagesTable = sqliteTable("pages_table", (t) => ({
   title: t.text().notNull(),
   slug: t.text().notNull().unique(),
   url: t.text().notNull().unique(),
+  publish: t.text().notNull().default("unpublish"),
   content: t.text().default(""),
 }));

@@ -1,30 +1,52 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 import * as Editor from "@/components/editor/editor";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
+import { createNewPage } from "@/lib/actions/create-new-page";
 import { slugify } from "@/lib/slugify";
-
-type Page = {
-  title: string;
-  slug: string;
-  url: string;
-  publish: boolean;
-  content: string;
-};
+import type { TPageContent } from "@/lib/types";
 
 export default function CreateNewPage() {
-  const [pageContent, setPageContent] = useState<Page>({
+  const [pageContent, setPageContent] = useState<TPageContent>({
     title: "",
     slug: "",
     url: "",
-    publish: false,
+    publish: "draft",
     content: "",
   });
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  function handleOnSaveClick() {
-    console.log(pageContent);
+  async function handleOnSaveClick() {
+    setLoading(true);
+    if (pageContent.title === "") {
+      toast.error("Page title can not be empty");
+      setLoading(false);
+      return;
+    }
+    if (pageContent.slug === "") {
+      toast.error("Page slug can not be empty");
+      setLoading(false);
+      return;
+    }
+    if (pageContent.content === "") {
+      toast.error("Page content can not be empty");
+      setLoading(false);
+      return;
+    }
+    await createNewPage(pageContent)
+      .then(() => {
+        setLoading(false);
+        router.replace(`/admin/pages?action=edit&slug=${pageContent.slug}`);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
   }
 
   return (
@@ -36,10 +58,13 @@ export default function CreateNewPage() {
             className="w-52"
             value={pageContent.title}
             onChange={(event) => {
+              const titleSlug = slugify(event.target.value);
+
               setPageContent({
                 ...pageContent,
                 title: event.target.value,
-                slug: slugify(event.target.value),
+                slug: titleSlug,
+                url: `/${titleSlug}`,
               });
             }}
           />
@@ -55,13 +80,23 @@ export default function CreateNewPage() {
 
         <div className="flex items-center gap-2">
           <Button className="cursor-pointer">Publish</Button>
-          <Button
-            variant={"outline"}
-            className="cursor-pointer"
-            onClick={handleOnSaveClick}
-          >
-            Save
-          </Button>
+          {loading ? (
+            <Button
+              variant={"outline"}
+              onClick={handleOnSaveClick}
+              disabled={loading}
+            >
+              Saving... <Spinner data-icon="inline-start" />
+            </Button>
+          ) : (
+            <Button
+              variant={"outline"}
+              className="cursor-pointer"
+              onClick={handleOnSaveClick}
+            >
+              Save
+            </Button>
+          )}
         </div>
       </header>
 
