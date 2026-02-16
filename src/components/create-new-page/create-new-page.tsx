@@ -33,6 +33,7 @@ export default function CreateNewPage() {
         <div className="flex items-center gap-2">
           <Input
             placeholder="Page Title"
+            className="w-52"
             value={pageContent.title}
             onChange={(event) => {
               setPageContent({
@@ -44,6 +45,7 @@ export default function CreateNewPage() {
           />
           <Input
             placeholder="Page Slug"
+            className="w-52"
             value={pageContent.slug}
             onChange={(event) => {
               setPageContent({ ...pageContent, slug: event.target.value });
@@ -52,8 +54,14 @@ export default function CreateNewPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button>Publish</Button>
-          <Button onClick={handleOnSaveClick}>Save</Button>
+          <Button className="cursor-pointer">Publish</Button>
+          <Button
+            variant={"outline"}
+            className="cursor-pointer"
+            onClick={handleOnSaveClick}
+          >
+            Save
+          </Button>
         </div>
       </header>
 
