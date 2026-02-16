@@ -58,7 +58,11 @@ export default function CreateNewPage() {
       </header>
 
       <main className="mx-auto w-full max-w-7xl space-y-5 py-10">
-        <Editor.Provider>
+        <Editor.Provider
+          onUpdate={(editor) => {
+            setPageContent({ ...pageContent, content: editor.getHTML() });
+          }}
+        >
           <Editor.Box />
         </Editor.Provider>
       </main>
