@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import { Settings } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import RenderPageContent from "@/components/page-content/render-page-content";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -11,7 +12,6 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-// import PageEditor from "@/components/page-editor";
 import { db } from "@/lib/db";
 import { pagesTable } from "@/lib/db/schema";
 
@@ -61,7 +61,7 @@ export default async function Page(props: PageProps<"/[[...page]]">) {
             </EmptyHeader>
           </Empty>
         ) : (
-          <div>hello</div>
+          <RenderPageContent content={pageContent.content} />
         )}
       </main>
     </div>
