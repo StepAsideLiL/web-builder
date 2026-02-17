@@ -1,6 +1,7 @@
+import { eq } from "drizzle-orm";
 import { Settings } from "lucide-react";
 import Link from "next/link";
-import CreateNewPage from "@/components/create-new-page/create-new-page";
+import EditPageContent from "@/components/page-content/edit-page-content";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -15,12 +16,26 @@ import { pagesTable } from "@/lib/db/schema";
 import { loadSearchParams } from "@/lib/search-param";
 
 export default async function Page(props: PageProps<"/admin/pages">) {
-  const { action } = loadSearchParams(await props.searchParams);
-
-  console.log(action);
+  const { action, slug } = loadSearchParams(await props.searchParams);
 
   if (action === "new-page") {
-    return <CreateNewPage />;
+    return <EditPageContent />;
+  }
+
+  if (action === "edit" && typeof slug === "string" && slug.length > 0) {
+    const pageContent = await db
+      .select({
+        title: pagesTable.title,
+        slug: pagesTable.slug,
+        url: pagesTable.url,
+        publish: pagesTable.publish,
+        content: pagesTable.content,
+      })
+      .from(pagesTable)
+      .where(eq(pagesTable.slug, slug))
+      .get();
+
+    if (pageContent) return <EditPageContent content={pageContent} />;
   }
 
   const pageContent = await db.select().from(pagesTable);

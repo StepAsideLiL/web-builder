@@ -1,7 +1,4 @@
-export type TPageContent = {
-  title: string;
-  slug: string;
-  url: string;
-  publish: "unpublish" | "publish" | "draft";
-  content: string;
-};
+import type { InferSelectModel } from "drizzle-orm";
+import type { pagesTable } from "../db/schema";
+
+export type TPageContent = Omit<InferSelectModel<typeof pagesTable>, "id">;

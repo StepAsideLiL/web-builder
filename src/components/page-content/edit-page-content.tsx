@@ -11,14 +11,22 @@ import { createNewPage } from "@/lib/actions/create-new-page";
 import { slugify } from "@/lib/slugify";
 import type { TPageContent } from "@/lib/types";
 
-export default function CreateNewPage() {
-  const [pageContent, setPageContent] = useState<TPageContent>({
-    title: "",
-    slug: "",
-    url: "",
-    publish: "draft",
-    content: "",
-  });
+export default function EditPageContent({
+  content,
+}: {
+  content?: TPageContent;
+}) {
+  const [pageContent, setPageContent] = useState<TPageContent>(
+    content
+      ? content
+      : {
+          title: "",
+          slug: "",
+          url: "",
+          publish: "draft",
+          content: "",
+        },
+  );
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -102,6 +110,7 @@ export default function CreateNewPage() {
 
       <main className="mx-auto w-full max-w-7xl space-y-5 py-10">
         <Editor.Provider
+          content={pageContent.content}
           onUpdate={(editor) => {
             setPageContent({ ...pageContent, content: editor.getHTML() });
           }}
