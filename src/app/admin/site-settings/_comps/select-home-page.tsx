@@ -26,8 +26,6 @@ export default function SelectHomePage({ pages }: { pages: TPage[] }) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  console.log(pageUrl);
-
   async function handleSetAsHomePage() {
     setLoading(true);
 
