@@ -27,7 +27,10 @@ export default async function Page(props: PageProps<"/[[...page]]">) {
     .where(eq(pagesTable.url, pageUrl))
     .get();
 
-  if (pageUrl !== "/" && pageContent === undefined) {
+  if (
+    (pageUrl !== "/" && pageContent === undefined) ||
+    pageContent?.publish !== "publish"
+  ) {
     notFound();
   }
 
@@ -70,8 +73,8 @@ export default async function Page(props: PageProps<"/[[...page]]">) {
 
 /**
  * TODOs
- * - create admin page
- * - create pages page
+ * - create admin sitebar
+ * - create site settings
  * - get page content from db
  * - create edit page with tiptap
  */

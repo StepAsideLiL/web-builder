@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import { Settings } from "lucide-react";
 import Link from "next/link";
 import EditPageContent from "@/components/page-content/edit-page-content";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Empty,
@@ -55,7 +56,10 @@ export default async function Page(props: PageProps<"/admin/pages">) {
           <div className="space-y-2">
             {pages.map((page) => (
               <div key={page.id} className="border p-2">
-                <h1>{page.title}</h1>
+                <div className="flex items-center gap-2">
+                  <h1>{page.title}</h1>
+                  <Badge variant={"outline"}>{page.url}</Badge>
+                </div>
                 <Button variant={"link"} asChild>
                   <Link href={`/admin/pages?action=edit&slug=${page.slug}`}>
                     Edit
