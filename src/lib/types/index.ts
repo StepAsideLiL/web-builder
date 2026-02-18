@@ -1,4 +1,5 @@
 import type { InferSelectModel } from "drizzle-orm";
-import type { pagesTable } from "../db/schema";
+import type { pagesTable } from "@/lib/db/schema";
 
+export type TPage = InferSelectModel<typeof pagesTable>;
 export type TPageContent = Omit<InferSelectModel<typeof pagesTable>, "id">;
