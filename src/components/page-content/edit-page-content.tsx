@@ -110,7 +110,7 @@ export default function EditPageContent({
 
       <main className="mx-auto w-full max-w-7xl space-y-5 py-10">
         <Editor.Provider
-          content={pageContent.content}
+          content={content ? content.content : ""}
           onUpdate={(editor) => {
             setPageContent({ ...pageContent, content: editor.getHTML() });
           }}
