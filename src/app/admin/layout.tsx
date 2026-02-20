@@ -1,12 +1,21 @@
-import Link from "next/link";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarProvider,
-} from "@/components/ui/sidebar";
+import DashboardSidebar from "@/components/dashboard-sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import type { TAdminNavMenus } from "@/lib/types";
+
+const adminNavPages: TAdminNavMenus[] = [
+  {
+    name: "Home",
+    href: "/admin",
+  },
+  {
+    name: "Pages",
+    href: "/admin/pages",
+  },
+  {
+    name: "Site Settings",
+    href: "/admin/site-settings",
+  },
+];
 
 export default function Layout({
   children,
@@ -15,31 +24,9 @@ export default function Layout({
 }>) {
   return (
     <SidebarProvider>
-      <Sidebar>
-        <SidebarContent>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <Link href={"/admin"}>Home</Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+      <DashboardSidebar adminNavMenus={adminNavPages} />
 
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <Link href={"/admin/pages"}>Pages</Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild>
-                <Link href={"/admin/site-settings"}>Site Settings</Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarContent>
-      </Sidebar>
-
-      {children}
+      <div className="flex-1 px-10">{children}</div>
     </SidebarProvider>
   );
 }
