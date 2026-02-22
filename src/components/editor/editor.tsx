@@ -40,7 +40,7 @@ function getExtensions() {
     StarterKit.configure({
       heading: {
         HTMLAttributes: {
-          className: "hello",
+          className: "",
         },
       },
     }),

@@ -27,33 +27,75 @@ export default function EditPageContent({
           content: "",
         },
   );
-  const [loading, setLoading] = useState(false);
+  const [saveBtnLoading, setSaveBtnLoadingLoading] = useState(false);
+  const [publishBtnLoading, setPublishBtnLoadingLoading] = useState(false);
   const router = useRouter();
 
-  async function handleOnSaveClick() {
-    setLoading(true);
+  console.log(pageContent);
+
+  async function upsertPage(page: TPageContent) {
     if (pageContent.title === "") {
       toast.error("Page title can not be empty");
-      setLoading(false);
+      setSaveBtnLoadingLoading(false);
+      setPublishBtnLoadingLoading(false);
       return;
     }
     if (pageContent.slug === "") {
       toast.error("Page slug can not be empty");
-      setLoading(false);
+      setSaveBtnLoadingLoading(false);
+      setPublishBtnLoadingLoading(false);
       return;
     }
     if (pageContent.content === "") {
       toast.error("Page content can not be empty");
-      setLoading(false);
+      setSaveBtnLoadingLoading(false);
+      setPublishBtnLoadingLoading(false);
       return;
     }
-    await createNewPage(pageContent)
+    await createNewPage(page).catch(() => {
+      console.error("Failed to modify DB.");
+    });
+  }
+
+  async function handleOnSaveClick() {
+    setSaveBtnLoadingLoading(true);
+    await upsertPage({ ...pageContent })
       .then(() => {
-        setLoading(false);
+        setSaveBtnLoadingLoading(false);
+        toast.success("Page is saved as draft.");
         router.replace(`/admin/pages?action=edit&slug=${pageContent.slug}`);
       })
       .catch(() => {
-        setLoading(false);
+        setSaveBtnLoadingLoading(false);
+        toast.error("Page is failed to save.");
+      });
+  }
+
+  async function handleOnPublishClick() {
+    setPublishBtnLoadingLoading(true);
+    await upsertPage({ ...pageContent, publish: "publish" })
+      .then(() => {
+        setPublishBtnLoadingLoading(false);
+        toast.success("Page is published.");
+        router.refresh();
+      })
+      .catch(() => {
+        setPublishBtnLoadingLoading(false);
+        toast.error("Post id failed to publish.");
+      });
+  }
+
+  async function handleOnUnpublishClick() {
+    setPublishBtnLoadingLoading(true);
+    await upsertPage({ ...pageContent, publish: "unpublish" })
+      .then(() => {
+        setPublishBtnLoadingLoading(false);
+        toast.success("Page is unpublished.");
+        router.refresh();
+      })
+      .catch(() => {
+        setPublishBtnLoadingLoading(false);
+        toast.error("Post id failed to unpublish.");
       });
   }
 
@@ -87,19 +129,50 @@ export default function EditPageContent({
         </div>
 
         <div className="flex items-center gap-2">
-          <Button className="cursor-pointer">Publish</Button>
-          {loading ? (
-            <Button
-              variant={"outline"}
-              onClick={handleOnSaveClick}
-              disabled={loading}
-            >
+          {(pageContent.publish === "unpublish" ||
+            pageContent.publish === "draft") && (
+            <div>
+              {publishBtnLoading ? (
+                <Button disabled={publishBtnLoading || saveBtnLoading}>
+                  Publishing... <Spinner data-icon="inline-start" />
+                </Button>
+              ) : (
+                <Button
+                  disabled={publishBtnLoading || saveBtnLoading}
+                  className="cursor-pointer"
+                  onClick={handleOnPublishClick}
+                >
+                  Publish
+                </Button>
+              )}
+            </div>
+          )}
+          {pageContent.publish === "publish" && (
+            <div>
+              {publishBtnLoading ? (
+                <Button disabled={publishBtnLoading || saveBtnLoading}>
+                  Unpublishing... <Spinner data-icon="inline-start" />
+                </Button>
+              ) : (
+                <Button
+                  disabled={publishBtnLoading || saveBtnLoading}
+                  className="cursor-pointer"
+                  onClick={handleOnUnpublishClick}
+                >
+                  Unpublish
+                </Button>
+              )}
+            </div>
+          )}
+          {saveBtnLoading ? (
+            <Button variant={"outline"} disabled={saveBtnLoading}>
               Saving... <Spinner data-icon="inline-start" />
             </Button>
           ) : (
             <Button
               variant={"outline"}
               className="cursor-pointer"
+              disabled={saveBtnLoading || publishBtnLoading}
               onClick={handleOnSaveClick}
             >
               Save

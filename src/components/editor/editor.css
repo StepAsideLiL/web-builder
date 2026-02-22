@@ -1,3 +1,4 @@
+@import "tailwindcss";
 @import "../../app/globals.css";
 
 .tiptap p.is-editor-empty:first-child::before {

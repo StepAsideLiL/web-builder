@@ -5,7 +5,7 @@ import { pagesTable } from "@/lib/db/schema";
 import type { TPageContent } from "@/lib/types";
 
 export async function createNewPage(pageContent: TPageContent) {
-  const { title, slug, url, content } = pageContent;
+  const { title, slug, url, content, publish } = pageContent;
 
   await db
     .insert(pagesTable)
@@ -13,7 +13,18 @@ export async function createNewPage(pageContent: TPageContent) {
       title,
       slug,
       url,
+      publish,
       content,
+    })
+    .onConflictDoUpdate({
+      target: pagesTable.url,
+      set: {
+        title,
+        slug,
+        url,
+        publish,
+        content,
+      },
     })
     .catch((error) => {
       throw new Error(
