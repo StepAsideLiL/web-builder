@@ -10,6 +10,6 @@ export const pagesTable = sqliteTable("pages_table", (t) => ({
       enum: ["unpublish", "publish", "draft"],
     })
     .notNull()
-    .default("unpublish"),
+    .default("draft"),
   content: t.text().notNull().default("<p></p>"),
 }));

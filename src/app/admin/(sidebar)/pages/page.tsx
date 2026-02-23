@@ -1,7 +1,5 @@
-import { eq } from "drizzle-orm";
 import { Settings } from "lucide-react";
 import Link from "next/link";
-import EditPageContent from "@/components/page-content/edit-page-content";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,40 +12,15 @@ import {
 } from "@/components/ui/empty";
 import { db } from "@/lib/db";
 import { pagesTable } from "@/lib/db/schema";
-import { loadSearchParams } from "@/lib/search-param";
 
-export default async function Page(props: PageProps<"/admin/pages">) {
-  const { action, slug } = loadSearchParams(await props.searchParams);
-
-  if (action === "new-page") {
-    return <EditPageContent />;
-  }
-
-  if (action === "edit" && typeof slug === "string" && slug.length > 0) {
-    const pageContent = await db
-      .select({
-        title: pagesTable.title,
-        slug: pagesTable.slug,
-        url: pagesTable.url,
-        publish: pagesTable.publish,
-        content: pagesTable.content,
-      })
-      .from(pagesTable)
-      .where(eq(pagesTable.slug, slug))
-      .get();
-
-    if (pageContent) {
-      return <EditPageContent content={pageContent} />;
-    }
-  }
-
+export default async function Page() {
   const pages = await db.select().from(pagesTable);
 
   return (
     <main className="mx-auto w-full max-w-7xl space-y-5 py-10">
       <section>
         <Button className="cursor-pointer" asChild>
-          <Link href="/admin/pages?action=new-page">Create New Page</Link>
+          <Link href="/admin/edit?action=new-page">Create New Page</Link>
         </Button>
       </section>
 
@@ -61,12 +34,12 @@ export default async function Page(props: PageProps<"/admin/pages">) {
                   <Badge variant={"outline"}>{page.url}</Badge>
                 </div>
                 <Button variant={"link"} asChild>
-                  <Link href={`/admin/pages?action=edit&slug=${page.slug}`}>
+                  <Link href={`/admin/edit?action=edit&pageId=${page.id}`}>
                     Edit
                   </Link>
                 </Button>
                 <Button variant={"link"} asChild>
-                  <Link href={`/${page.slug}`}>View</Link>
+                  <Link href={`${page.url}`}>View</Link>
                 </Button>
               </div>
             ))}

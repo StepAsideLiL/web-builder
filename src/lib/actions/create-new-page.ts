@@ -7,7 +7,7 @@ import type { TPageContent } from "@/lib/types";
 export async function createNewPage(pageContent: TPageContent) {
   const { title, slug, url, content, publish } = pageContent;
 
-  await db
+  return await db
     .insert(pagesTable)
     .values({
       title,
@@ -26,6 +26,10 @@ export async function createNewPage(pageContent: TPageContent) {
         content,
       },
     })
+    .returning({
+      pageId: pagesTable.id,
+    })
+    .get()
     .catch((error) => {
       throw new Error(
         "Failed to insert data in db - createNewPage action.\n",

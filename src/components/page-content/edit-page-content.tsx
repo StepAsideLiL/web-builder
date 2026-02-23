@@ -31,8 +31,6 @@ export default function EditPageContent({
   const [publishBtnLoading, setPublishBtnLoadingLoading] = useState(false);
   const router = useRouter();
 
-  console.log(pageContent);
-
   async function upsertPage(page: TPageContent) {
     if (pageContent.title === "") {
       toast.error("Page title can not be empty");
@@ -52,7 +50,7 @@ export default function EditPageContent({
       setPublishBtnLoadingLoading(false);
       return;
     }
-    await createNewPage(page).catch(() => {
+    return await createNewPage(page).catch(() => {
       console.error("Failed to modify DB.");
     });
   }
@@ -60,10 +58,12 @@ export default function EditPageContent({
   async function handleOnSaveClick() {
     setSaveBtnLoadingLoading(true);
     await upsertPage({ ...pageContent })
-      .then(() => {
-        setSaveBtnLoadingLoading(false);
-        toast.success("Page is saved as draft.");
-        router.replace(`/admin/pages?action=edit&slug=${pageContent.slug}`);
+      .then((res) => {
+        if (res) {
+          setSaveBtnLoadingLoading(false);
+          toast.success("Page is saved as draft.");
+          router.replace(`/admin/edit?action=edit&pageId=${res.pageId}`);
+        }
       })
       .catch(() => {
         setSaveBtnLoadingLoading(false);
