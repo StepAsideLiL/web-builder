@@ -31,72 +31,78 @@ export default function EditPageContent({
   const [publishBtnLoading, setPublishBtnLoadingLoading] = useState(false);
   const router = useRouter();
 
-  async function upsertPage(page: TPageContent) {
+  function validatePageContent() {
     if (pageContent.title === "") {
       toast.error("Page title can not be empty");
-      setSaveBtnLoadingLoading(false);
-      setPublishBtnLoadingLoading(false);
-      return;
+      return false;
     }
     if (pageContent.slug === "") {
       toast.error("Page slug can not be empty");
-      setSaveBtnLoadingLoading(false);
-      setPublishBtnLoadingLoading(false);
-      return;
+      return false;
     }
     if (pageContent.content === "") {
       toast.error("Page content can not be empty");
-      setSaveBtnLoadingLoading(false);
-      setPublishBtnLoadingLoading(false);
-      return;
+      return false;
     }
-    return await createNewPage(page).catch(() => {
-      console.error("Failed to modify DB.");
-    });
+
+    return true;
   }
 
   async function handleOnSaveClick() {
     setSaveBtnLoadingLoading(true);
-    await upsertPage({ ...pageContent })
-      .then((res) => {
-        if (res) {
-          setSaveBtnLoadingLoading(false);
-          toast.success("Page is saved as draft.");
+
+    if (validatePageContent()) {
+      await createNewPage({ ...pageContent })
+        .then((res) => {
+          toast.success("Page is saved.");
           router.replace(`/admin/edit?action=edit&pageId=${res.pageId}`);
-        }
-      })
-      .catch(() => {
-        setSaveBtnLoadingLoading(false);
-        toast.error("Page is failed to save.");
-      });
+          setSaveBtnLoadingLoading(false);
+        })
+        .catch(() => {
+          setSaveBtnLoadingLoading(false);
+          toast.error("Page is failed to save.");
+        });
+    } else {
+      setSaveBtnLoadingLoading(false);
+    }
   }
 
   async function handleOnPublishClick() {
     setPublishBtnLoadingLoading(true);
-    await upsertPage({ ...pageContent, publish: "publish" })
-      .then(() => {
-        setPublishBtnLoadingLoading(false);
-        toast.success("Page is published.");
-        router.refresh();
-      })
-      .catch(() => {
-        setPublishBtnLoadingLoading(false);
-        toast.error("Post id failed to publish.");
-      });
+
+    if (validatePageContent()) {
+      await createNewPage({ ...pageContent, publish: "publish" })
+        .then(() => {
+          setPublishBtnLoadingLoading(false);
+          toast.success("Page is published.");
+          router.refresh();
+        })
+        .catch(() => {
+          setPublishBtnLoadingLoading(false);
+          toast.error("Post id failed to publish.");
+        });
+    } else {
+      setPublishBtnLoadingLoading(false);
+    }
   }
 
   async function handleOnUnpublishClick() {
     setPublishBtnLoadingLoading(true);
-    await upsertPage({ ...pageContent, publish: "unpublish" })
-      .then(() => {
-        setPublishBtnLoadingLoading(false);
-        toast.success("Page is unpublished.");
-        router.refresh();
-      })
-      .catch(() => {
-        setPublishBtnLoadingLoading(false);
-        toast.error("Post id failed to unpublish.");
-      });
+
+    if (validatePageContent()) {
+      await createNewPage({ ...pageContent, publish: "unpublish" })
+        .then(() => {
+          setPublishBtnLoadingLoading(false);
+          toast.success("Page is unpublished.");
+          router.refresh();
+        })
+        .catch(() => {
+          setPublishBtnLoadingLoading(false);
+          toast.error("Post id failed to unpublish.");
+        });
+    } else {
+      setPublishBtnLoadingLoading(false);
+    }
   }
 
   return (

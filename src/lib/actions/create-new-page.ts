@@ -4,10 +4,14 @@ import { db } from "@/lib/db";
 import { pagesTable } from "@/lib/db/schema";
 import type { TPageContent } from "@/lib/types";
 
-export async function createNewPage(pageContent: TPageContent) {
+export async function createNewPage(pageContent: TPageContent): Promise<
+  {
+    pageId: number;
+  } & TPageContent
+> {
   const { title, slug, url, content, publish } = pageContent;
 
-  return await db
+  const res = await db
     .insert(pagesTable)
     .values({
       title,
@@ -28,6 +32,11 @@ export async function createNewPage(pageContent: TPageContent) {
     })
     .returning({
       pageId: pagesTable.id,
+      title: pagesTable.title,
+      slug: pagesTable.slug,
+      url: pagesTable.url,
+      publish: pagesTable.publish,
+      content: pagesTable.content,
     })
     .get()
     .catch((error) => {
@@ -36,4 +45,6 @@ export async function createNewPage(pageContent: TPageContent) {
         error,
       );
     });
+
+  return res;
 }
