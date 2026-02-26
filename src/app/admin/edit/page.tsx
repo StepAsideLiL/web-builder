@@ -7,25 +7,35 @@ import { loadSearchParams } from "@/lib/search-param";
 export default async function Page(props: PageProps<"/admin/edit">) {
   const { action, pageId } = loadSearchParams(await props.searchParams);
 
-  if (action === "new-page") {
-    return <EditPageContent />;
-  }
-
   if (action === "edit" && typeof pageId === "string" && pageId.length > 0) {
     const pageContent = await db
-      .select({
-        title: pagesTable.title,
-        slug: pagesTable.slug,
-        url: pagesTable.url,
-        publish: pagesTable.publish,
-        content: pagesTable.content,
-      })
+      .select()
       .from(pagesTable)
       .where(eq(pagesTable.id, parseInt(pageId, 10)))
       .get();
 
-    if (pageContent) {
-      return <EditPageContent content={pageContent} />;
+    if (pageContent && parseInt(pageId, 10) === pageContent.id) {
+      return (
+        <EditPageContent
+          pageId={pageId}
+          action={action}
+          content={pageContent}
+        />
+      );
     }
   }
+
+  return (
+    <EditPageContent
+      action={action}
+      pageId={pageId}
+      content={{
+        title: "",
+        slug: "",
+        url: "",
+        publish: "draft",
+        content: "",
+      }}
+    />
+  );
 }

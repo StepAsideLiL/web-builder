@@ -8,25 +8,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { createNewPage } from "@/lib/actions/create-new-page";
+import type { Action } from "@/lib/search-param";
 import { slugify } from "@/lib/slugify";
 import type { TPageContent } from "@/lib/types";
 
 export default function EditPageContent({
+  pageId,
+  action,
   content,
 }: {
-  content?: TPageContent;
+  pageId: string;
+  action: Action;
+  content: TPageContent;
 }) {
-  const [pageContent, setPageContent] = useState<TPageContent>(
-    content
-      ? content
-      : {
-          title: "",
-          slug: "",
-          url: "",
-          publish: "draft",
-          content: "",
-        },
-  );
+  const [pageContent, setPageContent] = useState<TPageContent>(content);
   const [saveBtnLoading, setSaveBtnLoadingLoading] = useState(false);
   const [publishBtnLoading, setPublishBtnLoadingLoading] = useState(false);
   const router = useRouter();
@@ -51,16 +46,23 @@ export default function EditPageContent({
   async function handleOnSaveClick() {
     setSaveBtnLoadingLoading(true);
 
-    if (validatePageContent()) {
+    if (validatePageContent() && action === "new-page" && pageId === "") {
       await createNewPage({ ...pageContent })
         .then((res) => {
+          setPageContent({
+            title: res.title,
+            slug: res.slug,
+            url: res.url,
+            publish: res.publish,
+            content: res.content,
+          });
           toast.success("Page is saved.");
           router.replace(`/admin/edit?action=edit&pageId=${res.pageId}`);
           setSaveBtnLoadingLoading(false);
         })
         .catch(() => {
-          setSaveBtnLoadingLoading(false);
           toast.error("Page is failed to save.");
+          setSaveBtnLoadingLoading(false);
         });
     } else {
       setSaveBtnLoadingLoading(false);
@@ -72,10 +74,21 @@ export default function EditPageContent({
 
     if (validatePageContent()) {
       await createNewPage({ ...pageContent, publish: "publish" })
-        .then(() => {
-          setPublishBtnLoadingLoading(false);
+        .then((res) => {
+          setPageContent({
+            title: res.title,
+            slug: res.slug,
+            url: res.url,
+            publish: res.publish,
+            content: res.content,
+          });
+          if (pageId !== "" && typeof parseInt(pageId, 10) === "number") {
+            router.refresh();
+          } else {
+            router.replace(`/admin/edit?action=edit&pageId=${res.pageId}`);
+          }
           toast.success("Page is published.");
-          router.refresh();
+          setPublishBtnLoadingLoading(false);
         })
         .catch(() => {
           setPublishBtnLoadingLoading(false);
@@ -91,10 +104,17 @@ export default function EditPageContent({
 
     if (validatePageContent()) {
       await createNewPage({ ...pageContent, publish: "unpublish" })
-        .then(() => {
-          setPublishBtnLoadingLoading(false);
+        .then((res) => {
+          setPageContent({
+            title: res.title,
+            slug: res.slug,
+            url: res.url,
+            publish: res.publish,
+            content: res.content,
+          });
           toast.success("Page is unpublished.");
           router.refresh();
+          setPublishBtnLoadingLoading(false);
         })
         .catch(() => {
           setPublishBtnLoadingLoading(false);
@@ -156,11 +176,15 @@ export default function EditPageContent({
           {pageContent.publish === "publish" && (
             <div>
               {publishBtnLoading ? (
-                <Button disabled={publishBtnLoading || saveBtnLoading}>
+                <Button
+                  variant={"outline"}
+                  disabled={publishBtnLoading || saveBtnLoading}
+                >
                   Unpublishing... <Spinner data-icon="inline-start" />
                 </Button>
               ) : (
                 <Button
+                  variant={"outline"}
                   disabled={publishBtnLoading || saveBtnLoading}
                   className="cursor-pointer"
                   onClick={handleOnUnpublishClick}
