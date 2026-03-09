@@ -20,6 +20,7 @@ import {
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { wbColumn, wbContainer } from "./extensions/container";
 
 type TEditorContent = JSONContent | string;
 type EditorContextProps = {
@@ -48,6 +49,8 @@ function getExtensions() {
       placeholder: "Write something...",
     }),
     TextStyleKit,
+    wbColumn,
+    wbContainer,
   ];
 }
 
@@ -290,6 +293,20 @@ function EditorToggleOrderedListBtn(props: EditorToggleOrderedListBtnProps) {
   );
 }
 
+function EditorInsertContainer() {
+  const { editor } = useEditorContext();
+
+  if (!editor) {
+    throw new Error("Editor.ToggleOrderedListBtn should be in Editor.Provider");
+  }
+
+  return (
+    <Button onClick={() => editor.commands.insertWbContainer()}>
+      Insert Container
+    </Button>
+  );
+}
+
 export {
   EditorProvider as Provider,
   EditorBox as Box,
@@ -301,4 +318,5 @@ export {
   EditorToggleCodeBtn as ToggleCodeBtn,
   EditorToggleBulletListBtn as ToggleBulletListBtn,
   EditorToggleOrderedListBtn as ToggleOrderedListBtn,
+  EditorInsertContainer as InsertContainer,
 };

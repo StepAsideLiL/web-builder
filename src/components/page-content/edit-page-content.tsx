@@ -218,6 +218,7 @@ export default function EditPageContent({
             setPageContent({ ...pageContent, content: editor.getHTML() });
           }}
         >
+          <Editor.InsertContainer />
           <Editor.Box />
         </Editor.Provider>
       </main>
